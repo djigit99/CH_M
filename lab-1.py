@@ -35,7 +35,7 @@ def newton_method(a, b, eps):
         else:
             x0 = b
 
-        xn = x0 - func(x0) / d_fun(x0);
+        xn = x0 - func(x0) / d_fun(x0)
         while np.fabs(x0 - xn) > eps:
             x0 = xn
             xn = x0 - func(x0) / d_fun(x0)
@@ -46,8 +46,22 @@ def newton_method(a, b, eps):
         raise
 
 
+def relax_method(a, b, eps):
+    m, M = d_fun(a), d_fun(b)
+    if m > M:
+        m, M = M, m
+    tau = 2 / (m + M)
+    if d_fun(a) > 0 and d_fun(b) > 0:
+        tau *= -1
+    prev_x = a
+    while True:
+        x = prev_x + tau * func(prev_x)
+        if np.fabs(x - prev_x) <= eps:
+            return x
+        prev_x = x
+
 def main():
-    ans = newton_method(2, 10, 0.00001)
+    ans = relax_method(2, 10, 0.00001)
     print(ans) # print x
 
     #draw plow for testing
