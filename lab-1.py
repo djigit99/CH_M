@@ -13,7 +13,7 @@ def div_method(a, b, eps):
 
     if b - a < eps:
         return c
-    if np.fabs(func(c)) < 0:
+    if np.fabs(func(c)) - eps  < 0:
         return c
 
     if func(a) * func(c) < 0:
