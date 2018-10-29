@@ -21,8 +21,33 @@ def div_method(a, b, eps):
     if func(c) * func(b) < 0:
         return div_method(c, b, eps)
 
+def d_fun(x):
+    st = 1e-5
+    return (func(x+st)-func(x)) / st
+
+def newton_method(a, b, eps):
+    try:
+        if func(a) * func(b) > 0:
+            raise RuntimeError("Bad a or b")
+
+        if func(a) * d_fun(d_fun(a)) < 0:
+            x0 = a
+        else:
+            x0 = b
+
+        xn = x0 - func(x0) / d_fun(x0);
+        while np.fabs(x0 - xn) > eps:
+            x0 = xn
+            xn = x0 - func(x0) / d_fun(x0)
+
+        return xn
+
+    except RuntimeError:
+        raise
+
+
 def main():
-    ans = div_method(2, 10, 0.00001)
+    ans = newton_method(2, 10, 0.00001)
     print(ans) # print x
 
     #draw plow for testing
