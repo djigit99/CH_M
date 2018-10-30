@@ -1,6 +1,3 @@
-from __future__ import division
-from __future__ import print_function
-
 import numpy as np
 
 def gen_matrix(n, x, a):
@@ -27,18 +24,51 @@ def gause_method(n, a, b):
             else:
                 b[i] -= a[i][j] * x[j]
     return x
+
+def yakobi_method(n, a, b, eps):
+    x0 = np.zeros(n)
+    xn = np.zeros(n)
+    B = np.zeros((n,n))
+    d = np.zeros(n)
+
+    for i in range(n):
+        for j in range(n):
+            if j == i:
+                B[i][i] = 0
+            else:
+                B[i][j] = (-a[i][j] / a[i][i])
+        d[i] = b[i] / a[i][i]
+
+    e1 = (1 - np.linalg.norm(B, np.inf)) / np.linalg.norm(B, np.inf) * eps
+
+    x0 = d
+    xn = np.dot(B, x0)
+    for i in range(n):
+        xn[i] += d[i]
+    print("B = ", B)
+    while np.linalg.norm( np.subtract(xn, x0), np.inf) >= e1:
+        x0 = xn
+        xn = np.dot(B, x0)
+        for i in range(n):
+            xn[i] += d[i]
+    return xn
+
+
 def check_ans(x, ans, eps):
     for i in range(len(x)):
         if np.fabs(x[i] - ans[i]) > eps:
             return False
     return True
+
 def main():
     n = int(input("Enter n : "))
     eps = 1e-5
-    x, a = np.random.rand(n), np.random.rand(n, n)
+    #x, a = np.random.randint(1, 10, size=(n)), np.random.randint(1, 10, size=(n,n))
+    x,a = np.array([1.102, 0.991, 1.101]), np.array([[10, 1, -1], [1, 10, -1], [-1, 1, 10]])
     b = gen_matrix(n, x, a)
-    xans = gause_method(n, a, b)
+    xans = yakobi_method(n, a, b, eps)
     print (x, '\n', xans)
     print(check_ans(x, xans, eps))
+
 if __name__ == "__main__":
     main()
