@@ -66,7 +66,7 @@ def main():
     ans = relax_method(2, 10, 0.00001)
     print(ans) # print x
 
-    #draw plow for testing
+    #draw plot for testing
     x = np.arange(2.0, 10.0, 0.2)
     plt.plot(x, (x-2)**2 - 5)
     plt.axhline(0)
