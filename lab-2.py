@@ -1,7 +1,7 @@
 import numpy as np
 
 def gen_matrix(n, x, a):
-    b = [0] * n
+    b = np.zeros(n)
     for i in range(n):
         for j in range(n):
             b[i] += a[i][j] * x[j]
@@ -84,6 +84,33 @@ def zeidel_method(n, a, b, eps):
             xn[i] += d[i]
     return xn
 
+def random_three_diagonal_matrix(n):
+    a = np.zeros((n,n))
+    for i in range(n):
+        for j in range(n):
+            if j == i or j == i - 1 or j == i + 1:
+                a[i][j] = np.random.normal()
+    return a
+
+def progonka_method(n, a, b):
+    A, B = np.zeros(n), np.zeros(n)
+    for i in range(n):
+        if i == 0:
+            y = a[i][i]
+            A[i] = - (a[i][i+1] / y)
+            B[i] = b[i] / y
+        elif i == n-1:
+            y = a[i][i] + a[i][i-1] * A[i-1]
+            B[i] = (b[i] - a[i][i-1] * B[i-1]) / y
+        else:
+            y = a[i][i] + a[i][i-1] * A[i-1]
+            A[i] = - (a[i][i+1] / y)
+            B[i] = (b[i] - a[i][i-1] * B[i-1]) / y
+    x = np.zeros(n)
+    x[n-1] = B[n-1]
+    for i in range(n-2, -1, -1):
+        x[i] = A[i] * x[i+1] + B[i]
+    return x
 
 def check_ans(x, ans, eps):
     for i in range(len(x)):
@@ -94,10 +121,14 @@ def check_ans(x, ans, eps):
 def main():
     n = int(input("Enter n : "))
     eps = 1e-5
-    #x, a = np.random.randint(1, 10, size=(n)), np.random.randint(1, 10, size=(n,n))
-    x,a = np.array([1.102, 0.991, 1.101]), np.array([[10, 1, -1], [1, 10, -1], [-1, 1, 10]])
+    #x, a = np.random.rand(n), np.random.rand(n,n)
+    #x,a = np.array([1.102, 0.991, 1.101]), np.array([[10, 1, -1], [1, 10, -1], [-1, 1, 10]])
+    #x,a = np.array([1.49, -0.02, -0.68]), np.array([[2, -1, 0], [5, 4, 2], [0, 1, -3]])
+    #x,a = np.array([-3, 1, 5, -8]),np.array([[2,1,0,0],[1,10,-5,0],[0,1,-5,2], [0,0,1,4]])
+    x,a = np.random.rand(n), random_three_diagonal_matrix(n)
     b = gen_matrix(n, x, a)
-    xans = zeidel_method(n, a, b, eps)
+    print(a)
+    xans = progonka_method(n, a, b)
     print (x, '\n', xans)
     print(check_ans(x, xans, eps))
 
