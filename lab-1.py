@@ -51,7 +51,7 @@ def relax_method(a, b, eps):
     if m > M:
         m, M = M, m
     tau = 2 / (m + M)
-    if d_fun(a) > 0 and d_fun(b) > 0:
+    if d_fun(a) > 0:
         tau *= -1
     prev_x = a
     while True:
@@ -61,6 +61,8 @@ def relax_method(a, b, eps):
         prev_x = x
 
 def main():
+    #ans = div_method(2, 10, 0.00001)
+    #ans = newton_method(2, 10, 0.00001)
     ans = relax_method(2, 10, 0.00001)
     print(ans) # print x
 

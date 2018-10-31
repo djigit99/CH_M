@@ -1,11 +1,44 @@
 import numpy as np
 
-def gen_matrix(n, x, a):
+def gen_vector_b(n, x, a):
     b = np.zeros(n)
     for i in range(n):
         for j in range(n):
             b[i] += a[i][j] * x[j]
     return b
+
+def gen_random_matrix(n):
+    a = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            a[i][j] = np.random.normal()
+    return a
+
+def gen_dominant_matrix(n):
+    a = np.zeros((n, n))
+    for i in range(n):
+        sum = 0
+        for j in range(n):
+            if (i != j):
+                a[i][j] = np.random.uniform(1, 1000)
+                sum += np.fabs(a[i][j])
+        a[i][i] = sum + np.random.uniform(1, 1000)
+    return a
+
+def gen_gilbert_matrix(n):
+    a = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            a[i][j] = 1 / (i+j+1)
+    return a
+
+def gen_three_diagonal_matrix(n):
+    a = np.zeros((n,n))
+    for i in range(n):
+        for j in range(n):
+            if j == i or j == i - 1 or j == i + 1:
+                a[i][j] = np.random.normal()
+    return a
 
 def gause_method(n, a, b):
     for i in range(0, n-1):
@@ -84,14 +117,6 @@ def zeidel_method(n, a, b, eps):
             xn[i] += d[i]
     return xn
 
-def random_three_diagonal_matrix(n):
-    a = np.zeros((n,n))
-    for i in range(n):
-        for j in range(n):
-            if j == i or j == i - 1 or j == i + 1:
-                a[i][j] = np.random.normal()
-    return a
-
 def progonka_method(n, a, b):
     A, B = np.zeros(n), np.zeros(n)
     for i in range(n):
@@ -125,10 +150,20 @@ def main():
     #x,a = np.array([1.102, 0.991, 1.101]), np.array([[10, 1, -1], [1, 10, -1], [-1, 1, 10]])
     #x,a = np.array([1.49, -0.02, -0.68]), np.array([[2, -1, 0], [5, 4, 2], [0, 1, -3]])
     #x,a = np.array([-3, 1, 5, -8]),np.array([[2,1,0,0],[1,10,-5,0],[0,1,-5,2], [0,0,1,4]])
-    x,a = np.random.rand(n), random_three_diagonal_matrix(n)
-    b = gen_matrix(n, x, a)
-    print(a)
+
+    x = np.random.rand(n)
+    #a = gen_random_matrix(n)
+    #a = gen_gilbert_matrix(n)
+    #a = gen_dominant_matrix(n)
+    a = gen_three_diagonal_matrix(n)
+
+    b = gen_vector_b(n, x, a)
+
+    #xans = gause_method(n, a, b)
+    #xans = yakobi_method(n, a, b, eps)
+    #xans = zeidel_method(n, a, b, eps)
     xans = progonka_method(n, a, b)
+
     print (x, '\n', xans)
     print(check_ans(x, xans, eps))
 
