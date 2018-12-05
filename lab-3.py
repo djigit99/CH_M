@@ -146,7 +146,7 @@ def newton_form(n, x, y, eps):
 # y = -0.7 0 0.7 1 0.7 0 -0.7
 
 def main():
-    eps = 0.2
+    eps = 0.001
     n = int(input("Enter n : "))
     #a = float(input("Enter a : "))
     #b = float(input("Enter b : "))

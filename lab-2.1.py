@@ -18,16 +18,21 @@ def gen_stochastic_matrix(n):
     return a
 
 def step_method(n, m, eps):
-    r = np.full((n, 1), 1 / n)
+    r = np.full((n, 1), 1.0 / n)
     r1 = np.dot(m, r)
-    while (np.linalg.norm((r1 - r), ord = 1) - eps > 0):
-        r = r1
-        r1 = np.dot(m, r)
-    return r1
+    r2 = np.dot(m, r1)
+    q1 = r1[0] / r[0]
+    q2 = r2[0] / r1[0]
+    while (q2 - q1 > eps):
+        r1 = r2
+        r2 = np.dot(m, r1)
+        q1 = q2
+        q2 = r2[0] / r1[0]
+    return r2
 
 def main():
     n = int(input("Enter n : "))
-    eps = 1e-3
+    eps = 1e-2
     m = gen_stochastic_matrix(n)
     print (m)
     r = step_method(n, m, eps)
